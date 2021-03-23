@@ -1,0 +1,90 @@
+﻿@model PagingCJView
+@{
+    ViewData["Title"] = "在线列表";
+
+    string Gps2Str(JX.JTGPSInfo gps)
+    {
+        string str = "";
+        if (gps != null)
+        {
+            str += gps.GPS.Longitude + "," + gps.GPS.Latitude + "," + gps.GPS.Gpsdate;
+        }
+        return str;
+    }
+}
+
+<div class="text-center">
+    <h1 class="display-4">在线列表 共 @Model.Sum 辆</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    手机号
+                </th>
+                <th>
+                    车牌
+                </th>
+                <th>
+                    连接信息
+                </th>
+                <th>
+                    制造商
+                </th>
+                <th>
+                    鉴权码
+                </th>
+                <th>
+                    上线时间
+                </th>
+                <th>
+                    GPS
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Data)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.SimKey)
+                    </td>
+                    <td>
+                        @(item.PlateName+"("+item.PlateColor+")")
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Ip)
+                    </td>
+                    <td>
+                        @if (item.DevInfo != null)
+                        {
+                            @(item.DevInfo.CDeviceID +"(" + item.DevInfo.MakerID + ")")
+                        }
+                    </td>
+                    <td>
+                        @item.DevInfo?.AuthorityID
+                    </td>
+                    <td>
+                        @item.AuthorityTime
+                    </td>
+                    <td>
+                        @Gps2Str(item.LastGpsInfo)
+                    </td>
+                    <td>
+                        @*@Html.ActionLink("上一页", "Index", new { /* id=item.PrimaryKey */ }) |
+                            @Html.ActionLink("下一页", "Index", new { /* id=item.PrimaryKey */ })*@
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (Model.Start > 0)
+    {
+        @Html.ActionLink("上一页", "Index", new { start = Model.GetLastIndex() })
+    }
+    @if (Model.Start + Model.Data.Count < Model.Sum - 1)
+    {
+        @Html.ActionLink("下一页", "Index", new { start = Model.GetNextIndex() })
+    }
+</div>

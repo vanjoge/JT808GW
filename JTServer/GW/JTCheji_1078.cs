@@ -55,15 +55,15 @@ namespace JTServer.GW
                 case 0x1003:
                     var avp = JTRTAVParametersUpload.NewEntity(bGps);
                     var he = new HashEntry[]{
-                        new HashEntry("AudioChannels", avp.AudioChannels),
-                        new HashEntry("AudioMaxChannels", avp.AudioMaxChannels),
-                        new HashEntry("AudioCodeType",(byte) avp.AudioCodeType),
-                        new HashEntry("AudioFrameLength", avp.AudioFrameLength),
-                        new HashEntry("AudioOut", avp.AudioOut),
-                        new HashEntry("AudioSamplingDigit", (byte)avp.AudioSamplingDigit),
-                        new HashEntry("AudioSamplingRate", (byte)avp.AudioSamplingRate),
-                        new HashEntry("VideoCodeType", (byte)avp.VideoCodeType),
-                        new HashEntry("VideoMaxChannels", avp.VideoMaxChannels),
+                        new HashEntry("AudioChannels", (int)avp.AudioChannels),
+                        new HashEntry("AudioMaxChannels", (int)avp.AudioMaxChannels),
+                        new HashEntry("AudioCodeType",(int) avp.AudioCodeType),
+                        new HashEntry("AudioFrameLength", (int)avp.AudioFrameLength),
+                        new HashEntry("AudioOut", (int)avp.AudioOut),
+                        new HashEntry("AudioSamplingDigit", (int)avp.AudioSamplingDigit),
+                        new HashEntry("AudioSamplingRate", (int)avp.AudioSamplingRate),
+                        new HashEntry("VideoCodeType", (int)avp.VideoCodeType),
+                        new HashEntry("VideoMaxChannels", (int)avp.VideoMaxChannels)
                     };
                     cl.MyTask.schRedis.Add(new HashSetAllWorker("AVParameters:" + head.Sim, he));
                     return true;

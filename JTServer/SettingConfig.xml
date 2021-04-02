@@ -3,5 +3,5 @@
   <PortClient>9300</PortClient>
   <ShowNetLog>true</ShowNetLog>
   <HexAddSpace>true</HexAddSpace>
-  <RedisExchangeHosts>127.0.0.1:6379,connectTimeout=20000,syncTimeout=20000,responseTimeout=20000</RedisExchangeHosts>
+  <RedisExchangeHosts>172.29.108.245:6379,connectTimeout=20000,syncTimeout=20000,responseTimeout=20000</RedisExchangeHosts>
 </ConfigModel>

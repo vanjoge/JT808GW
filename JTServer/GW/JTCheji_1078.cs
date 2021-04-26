@@ -73,13 +73,21 @@ namespace JTServer.GW
                 case 0x1205:
 
                     var videolist = JTVideoListInfo.NewEntity(bGps);
-                    VideoOrderAck ack = new VideoOrderAck()
+                    if (AllSendOrder.ContainsKey(videolist.SerialNumber))
                     {
-                        Status = 1,
-                        VideoList = videolist
-                    };
-                    var so = AllSendOrder[videolist.SerialNumber];
-                    cl.MyTask.schRedis.Add(new StringSetWorker<VideoOrderAck>("OCX_ORDERINFO_" + so.OrderId, ack, new TimeSpan(1, 0, 0)));
+
+                        var so = AllSendOrder[videolist.SerialNumber];
+                        var sd = AllSendData[videolist.SerialNumber];
+                        sd.Answer = SendDataState.Success;
+                        CheckSendOrderByAnswer(sd.Head);
+                        VideoOrderAck ack = new VideoOrderAck()
+                        {
+                            Status = 1,
+                            VideoList = videolist
+                        };
+
+                        cl.MyTask.schRedis.Add(new StringSetWorker<VideoOrderAck>("OCX_ORDERINFO_" + so.OrderId, ack, new TimeSpan(1, 0, 0)));
+                    }
                     return true;
                 case 0x1206:
                     SendDefaultAnswer(head);

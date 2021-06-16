@@ -64,7 +64,7 @@ namespace JTServer.Model
 
             CloseTimeOutSocket = true;
 
-            SckTimeoutSecNoAuthorityID = 200;
+            SckTimeoutSecNoAuthorityID = 10;
 
             GatewayID = 1;
             Token = "TOKEN.10.10.10.230";

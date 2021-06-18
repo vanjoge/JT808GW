@@ -75,7 +75,6 @@ namespace JTServer.GW
                     var videolist = JTVideoListInfo.NewEntity(bGps);
                     if (AllSendOrder.ContainsKey(videolist.SerialNumber))
                     {
-
                         var so = AllSendOrder[videolist.SerialNumber];
                         var sd = AllSendData[videolist.SerialNumber];
                         sd.Answer = SendDataState.Success;

@@ -844,6 +844,7 @@ namespace JTServer.GW
         #region 协议解析
         public void JXData(JTHeader head, byte[] bGps)
         {
+            jtdata.Is2019 = head.Is2019;
             if (cl.MyTask.Config.CanRegSecond)
             {
                 LastHeart = DateTime.Now;
@@ -937,6 +938,13 @@ namespace JTServer.GW
                         break;
                     case 0x0003://终端注销
                         JXLogOut(head);
+                        break;
+                    case 0x0004://服务器时间
+                        SendAnswer(jtdata.Package(0x8004, head.Sim,
+                            new JTServerTimeV19
+                            {
+                                ServerTime = DateTime.UtcNow
+                            }.GetBinaryData()));
                         break;
                     case 0x0104://查询终端参数设置应答
                         SendDefaultAnswer(head);
@@ -1132,7 +1140,18 @@ namespace JTServer.GW
         /// <param name="bGps"></param>
         private void JXAuthority(JTHeader head, byte[] bGps)
         {
-            var jtAuthority = JTAuthority.NewEntity(bGps);
+            string AuthorityID;
+            if (head.Is2019)
+            {
+                var jtAuthorityv19 = JTAuthorityV19.NewEntity(bGps);
+                AuthorityID = jtAuthorityv19.AuthorityID;
+            }
+            else
+            {
+                var jtAuthority = JTAuthority.NewEntity(bGps);
+                AuthorityID = jtAuthority.AuthorityID;
+            }
+
             if (cl.MyTask.dic809VehicleBySim.TryGetValue(head.Sim, out var dev))
             {
                 DevInfo = dev;
@@ -1147,7 +1166,7 @@ namespace JTServer.GW
                     Sim = head.Sim,
                     RegisterDate = DateTime.Now,
                     IpAddress = Ip,
-                    AuthorityID = jtAuthority.AuthorityID
+                    AuthorityID = AuthorityID
                 };
             //鉴权成功
             if (SendDefaultAnswer(head, JTAnswer.Success))
@@ -1169,8 +1188,16 @@ namespace JTServer.GW
         /// <param name="bGps"></param>
         private void JXRegInfo(JTHeader head, byte[] bGps)
         {
-            //终端注册解析
-            var reg = JTRegInfo.NewEntity(bGps);
+            JTRegInfo reg;
+            //终端注册解析 
+            if (head.Is2019)
+            {
+                reg = JTRegInfoV19.NewEntity<JTRegInfoV19>(bGps);
+            }
+            else
+            {
+                reg = JTRegInfo.NewEntity(bGps);
+            }
 
             DevInfo = new DeviceInfo
             {
@@ -1519,7 +1546,7 @@ namespace JTServer.GW
         /// <returns></returns>
         private byte[] GetMsbBody(JTHeader head, byte[] bGps)
         {
-            int hlen = head.Sub ? 16 : 12;
+            int hlen = head.GetHeadLen();
             int len = bGps.Length - hlen - 1;
             var bts = new byte[len];
             Array.Copy(bGps, hlen, bts, 0, len);

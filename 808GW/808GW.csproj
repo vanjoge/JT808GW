@@ -7,18 +7,10 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Error_log\**" />
-    <Compile Remove="LogFile\**" />
-    <Content Remove="Error_log\**" />
-    <Content Remove="LogFile\**" />
-    <EmbeddedResource Remove="Error_log\**" />
-    <EmbeddedResource Remove="LogFile\**" />
-    <None Remove="Error_log\**" />
-    <None Remove="LogFile\**" />
-  </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(Configuration)'=='Debug'">
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.16" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
   </ItemGroup>
 

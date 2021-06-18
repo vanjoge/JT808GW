@@ -69,7 +69,13 @@
                         @item.AuthorityTime
                     </td>
                     <td>
-                        @Gps2Str(item.LastGpsInfo)
+                        @if (item.LastGpsInfo != null)
+                        {
+                            @Gps2Str(item.LastGpsInfo)
+
+                            <a href="http://api.map.baidu.com/marker?location=@(item.LastGpsInfo.GPS.Latitude / 1000000d),@(item.LastGpsInfo.GPS.Longitude / 1000000d)&title=设备位置&content=@(item.LastGpsInfo.GPS.Gpsdate.ToString())&output=html&src=webapp.van.808gw&coord_type=wgs84" target="_blank">地图上显示</a>
+
+                        }
                     </td>
                     <td>
                         @*@Html.ActionLink("上一页", "Index", new { /* id=item.PrimaryKey */ }) |

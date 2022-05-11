@@ -90,7 +90,7 @@ namespace JTServer.GW
                             TaskId = res.TaskId,
                             sdp = sdp
                         };
-                        var ans= sdp.AnsSdp(did, res.LocIP, res.LocIP, res.LocPort);
+                        var ans = sdp.AnsSdp(did, res.LocIP, res.LocIP, res.LocPort);
                         //RTVS暂只支持TCP推RTP 暂限定为TCP
                         ans.NetType = SDP28181.RTPNetType.TCP;
                         return ans;

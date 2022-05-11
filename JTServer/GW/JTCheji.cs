@@ -1,7 +1,9 @@
 ﻿using JTServer.Model;
+using JTServer.Worker;
 using JX;
 using SQ.Base;
 using SQ.Base.GW;
+using SQ.Base.Queue;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -29,6 +31,7 @@ namespace JTServer.GW
             {
                 IsAuthority = false;
             }
+            StopGBCheji();
         }
 
         #region 事件
@@ -61,6 +64,8 @@ namespace JTServer.GW
                 return "12345678";
             }
         }
+
+        GBCheji gbCheji;
 
         public JTGPSInfo LastGpsInfo { get; set; }
         public string Ip { get; set; }
@@ -158,10 +163,13 @@ namespace JTServer.GW
                     if (value)
                     {
                         cl.MyTask.WriteLog("Sim[" + SimKey + "]上线");
+                        //启动SIP服务
+                        AutoStartGBCheji();
                     }
                     else
                     {
                         cl.MyTask.WriteLog("Sim[" + SimKey + "]下线");
+                        StopGBCheji();
                     }
                 }
 
@@ -1577,5 +1585,84 @@ namespace JTServer.GW
 
         #endregion
 
+        public GBDeviceSetting GetGBDeviceSetting()
+        {
+            return GetGBDeviceSetting(null);
+        }
+        public GBDeviceSetting GetGBDeviceSetting(RedisHelp.RedisHelper redisHelper)
+        {
+            try
+            {
+                redisHelper = redisHelper ?? cl.MyTask.RedisHelper;
+                return redisHelper.StringGet<GBDeviceSetting>("GWGBDevConf:" + SimKey);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+        public void SaveGBDeviceSetting(GBDeviceSetting conf)
+        {
+            cl.MyTask.RedisHelper.StringSet("GWGBDevConf:" + SimKey, conf);
+        }
+        public void AutoStartGBCheji()
+        {
+            if (gbCheji == null)
+            {
+                cl.MyTask.schRedis.Add(new DefaultWorkItem<RedisHelp.RedisHelper>((tag, c) =>
+                {
+                    c.ThrowIfCancellationRequested();
+
+                    if (IsAuthority)
+                    {
+                        var setting = GetGBDeviceSetting(tag);
+                        if (setting != null && setting.Enable)
+                        {
+                            StartGBCheji(setting);
+                        }
+                    }
+                }));
+            }
+        }
+        public void StartGBCheji(GBDeviceSetting setting)
+        {
+            if (IsAuthority && setting.Enable)
+            {
+                gbCheji?.Stop();
+                gbCheji = new GBCheji(this, setting, EnableTraceLogs: cl.MyTask.Config.ShowSipLog);
+                gbCheji.Start();
+            }
+        }
+
+        public void StopGBCheji()
+        {
+            if (gbCheji != null)
+            {
+                System.Threading.Tasks.Task.Run(() =>
+                {
+                    if (gbCheji != null)
+                    {
+                        var tmp = gbCheji;
+                        gbCheji = null;
+                        tmp.Stop();
+                    }
+                });
+            }
+        }
+        public string GetGBStatus()
+        {
+            if (gbCheji == null)
+            {
+                return "未启动";
+            }
+            else if (gbCheji.IsRegistered)
+            {
+                return "在线";
+            }
+            else
+            {
+                return "离线";
+            }
+        }
     }
 }

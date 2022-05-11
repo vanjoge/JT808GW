@@ -14,6 +14,7 @@ namespace _808GW
         public static JTServer.JTTask task = new JTServer.JTTask();
         public static void Main(string[] args)
         {
+            SIPSorceryLog.RegSIPSorceryLogFactory();
             task.Start();
             CreateHostBuilder(args).Build().Run();
             task.Stop();

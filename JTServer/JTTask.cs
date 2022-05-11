@@ -50,6 +50,7 @@ namespace JTServer
         /// </summary>
         public ConcurrentDictionary<string, JTCheji> ChejiList = new ConcurrentDictionary<string, JTCheji>();
         public SQ.Base.Queue.Scheduler<RedisHelper> schRedis;
+        public RedisHelper RedisHelper;
         public ConfigModel Config { get; set; }
         public DateTime LastReciveTime { get; internal set; }
         public List<DeviceParameters> DeviceParameters { get; internal set; }
@@ -141,7 +142,7 @@ namespace JTServer
         /// <returns></returns>
         public JTCheji GetChejiByClientPool(string Sim)
         {
-            if (ChejiList.TryGetValue(Sim, out JTCheji cj))
+            if (Sim != null && ChejiList.TryGetValue(Sim, out JTCheji cj))
             {
                 return cj;
             }
@@ -199,6 +200,7 @@ namespace JTServer
             {
                 Config = new ConfigModel();
             }
+            this.RedisHelper = new RedisHelper();
             var len = 3;
             schRedis = new SQ.Base.Queue.Scheduler<RedisHelper>(len);
             schRedis.Tags = new RedisHelper[len];

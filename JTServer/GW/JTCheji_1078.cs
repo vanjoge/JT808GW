@@ -11,6 +11,7 @@ namespace JTServer.GW
 {
     public partial class JTCheji
     {
+        public JTRTAVParametersUpload AvParameters;
 
         public void Send0x9105(List<JT0x9105ChannelItem> notifyList)
         {
@@ -65,6 +66,7 @@ namespace JTServer.GW
                         new HashEntry("VideoCodeType", (int)avp.VideoCodeType),
                         new HashEntry("VideoMaxChannels", (int)avp.VideoMaxChannels)
                     };
+                    AvParameters = avp;
                     cl.MyTask.schRedis.Add(new HashSetAllWorker("AVParameters:" + head.Sim, he));
                     return true;
                 case 0x1005:

@@ -395,6 +395,14 @@ namespace JTServer.Model
         /// HEX加空格
         /// </summary>
         public bool HexAddSpace { get; set; }
+        /// <summary>
+        /// 显示SIP日志
+        /// </summary>
+        public bool ShowSipLog { get; set; }
+        /// <summary>
+        /// RTVSAPI地址
+        /// </summary>
+        public string RTVSAPI { get; set; }
 
 
         /// <summary>

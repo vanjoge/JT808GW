@@ -5,12 +5,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SQ.Base" Version="2.2.0" />
-    <PackageReference Include="CV.Network" Version="1.1.0" />
-    <PackageReference Include="StackExchange.Redis" Version="2.2.4" />
+    <PackageReference Include="SIPSorcery" Version="6.0.7" />
+    <PackageReference Include="SQ.Base" Version="2.4.0" />
+    <PackageReference Include="CV.Network" Version="1.2.0" />
+    <PackageReference Include="StackExchange.Redis" Version="2.2.79" />
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="GB28181">
+      <HintPath>..\DLLs\GB28181.dll</HintPath>
+    </Reference>
+    <Reference Include="GB28181.Client">
+      <HintPath>..\DLLs\GB28181.Client.dll</HintPath>
+    </Reference>
     <Reference Include="JX">
       <HintPath>..\DLLs\JX.dll</HintPath>
     </Reference>

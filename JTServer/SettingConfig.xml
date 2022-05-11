@@ -4,4 +4,5 @@
   <ShowNetLog>true</ShowNetLog>
   <HexAddSpace>true</HexAddSpace>
   <RedisExchangeHosts>172.29.108.245:6379,connectTimeout=20000,syncTimeout=20000,responseTimeout=20000</RedisExchangeHosts>
+  <RTVSAPI>http://172.29.108.11/api/GB/</RTVSAPI>
 </ConfigModel>

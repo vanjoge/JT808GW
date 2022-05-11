@@ -1,0 +1,113 @@
+﻿@model JTServer.Model.GBDeviceSetting
+
+@{
+    ViewData["Title"] = "配置GB28181转发";
+    var strHead = Model.DeviceID.Substring(0, 8) + "011320";
+}
+
+<h1>配置GB28181转发</h1>
+
+<h4>Sip配置</h4>
+<hr />
+
+<form asp-action="GBConf">
+    <input type="hidden" name="Sim" value="@this.Context.Request.Query["Sim"]" />
+    <div class="row">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="col-md-6">
+            <div class="card card-default">
+                基础信息
+                <div class="card-body">
+
+                    <div class="form-group form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" asp-for="Enable" /> 启用
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Server" class="control-label">服务器地址</label>
+                        <input asp-for="Server" class="form-control my_control_txt" />
+                        <span asp-validation-for="Server" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Port" class="control-label">服务器端口</label>
+                        <input asp-for="Port" class="form-control my_control_txt" />
+                        <span asp-validation-for="Port" class="text-danger"></span>
+                    </div>
+                    <div class="form-group form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" asp-for="UseTcp" /> TCP模式
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ServerId" class="control-label">服务端ID</label>
+                        <input asp-for="ServerId" class="form-control my_control_txt" />
+                        <span asp-validation-for="ServerId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Password" class="control-label">服务端密码</label>
+                        <input asp-for="Password" class="form-control my_control_txt" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="DeviceID" class="control-label">设备ID</label>
+                        <input asp-for="DeviceID" class="form-control my_control_txt" />
+                        <span asp-validation-for="DeviceID" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-6">
+            <div class="card card-default" id="dChannel">
+                通道配置
+                <div>
+                    <input type="button" value="增加" class="btn btn-primary" onclick="addChannel();" />
+                    <input type="button" value="删除最后" class="btn btn-primary" onclick="removeChannel();" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="保存" class="btn btn-primary" />
+    </div>
+</form>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+
+        function addChannel() {
+            var idx = $("#dChannel").find(".devChannels").length;
+            addChannelDiv(idx, "@strHead" + pad(idx + 1, 6), (idx + 1));
+        }
+        function addChannelDiv(idx, DeviceID, Channel) {
+            var div = $("#dChannel");
+            div.append('<div class="card-body devChannels" id="dc_' + idx + '"> <div class="form-group"> <label class="control-label" for="Channel' + idx + '">通道号</label> <input class="form-control my_control_txt" type="number" id="Channel' + idx + '" name="Channels[' + idx + '].Channel" value="' + Channel + '"> <span class="text-danger field-validation-valid" data-valmsg-for="Channel' + idx + '" data-valmsg-replace="true"></span> </div><div class="form-group"> <label class="control-label" for="DeviceID' + idx + '">设备ID</label> <input class="form-control my_control_txt valid" type="text" id="DeviceID' + idx + '" name="Channels[' + idx + '].ID" value="' + DeviceID + '" aria-invalid="false"> <span class="text-danger field-validation-valid" data-valmsg-for="DeviceID' + idx + '" data-valmsg-replace="true"></span> </div>  </div>')
+        }
+
+        function removeChannel() {
+            var div = $("#dChannel");
+            var dcs = div.find(".devChannels");
+            if (dcs.length > 0) {
+                dcs.last().remove();
+            }
+        }
+        function pad(num, n) {
+            return Array(n > num ? (n - ('' + num).length + 1) : 0).join(0) + num;
+        }
+     @{int i = 0;
+         foreach (var item in Model.Channels)
+         {
+             var str = $"addChannelDiv({i++}, \"{item.ID}\", \"{item.Channel}\");";
+        @Html.Raw(str);
+             }
+         }
+    </script>
+}

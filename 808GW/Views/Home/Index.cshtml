@@ -38,7 +38,13 @@
                     上线时间
                 </th>
                 <th>
+                    GB在线状态
+                </th>
+                <th>
                     GPS
+                </th>
+                <th>
+                    配置
                 </th>
                 <th></th>
             </tr>
@@ -69,6 +75,9 @@
                         @item.AuthorityTime
                     </td>
                     <td>
+                        @item.GetGBStatus()
+                    </td>
+                    <td>
                         @if (item.LastGpsInfo != null)
                         {
                             @Gps2Str(item.LastGpsInfo)
@@ -76,6 +85,9 @@
                             <a href="http://api.map.baidu.com/marker?location=@(item.LastGpsInfo.GPS.Latitude / 1000000d),@(item.LastGpsInfo.GPS.Longitude / 1000000d)&title=设备位置&content=@(item.LastGpsInfo.GPS.Gpsdate.ToString())&output=html&src=webapp.van.808gw&coord_type=wgs84" target="_blank">地图上显示</a>
 
                         }
+                    </td>
+                    <td>
+                        @Html.ActionLink("配置GB28181转发", "GBConf", new { Sim = item.SimKey })
                     </td>
                     <td>
                         @*@Html.ActionLink("上一页", "Index", new { /* id=item.PrimaryKey */ }) |

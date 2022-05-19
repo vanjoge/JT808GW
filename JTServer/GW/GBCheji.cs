@@ -17,7 +17,7 @@ namespace JTServer.GW
     {
         class fromTagCache
         {
-            public string TaskId;
+            public string TaskID;
 
             public SDP28181 sdp;
         }
@@ -43,7 +43,7 @@ namespace JTServer.GW
             {
                 if (ditFromTagCache.TryGetValue(fromTag, out var item))
                 {
-                    var str = await SQ.Base.HttpHelperByHttpClient.HttpRequestHtml(cj.cl.MyTask.Config.RTVSAPI + $"StartRealPlay?TaskId={item.TaskId}&SSRC={item.sdp.SSRC}", false, CancellationToken.None);
+                    var str = await SQ.Base.HttpHelperByHttpClient.HttpRequestHtml(cj.cl.MyTask.Config.RTVSAPI + $"StartRealPlay?TaskID={item.TaskID}&SSRC={item.sdp.SSRC}", false, CancellationToken.None);
                     var res = str.ParseJSON<RETModel>();
                     return res.Code == StateCode.Success;
                 }
@@ -61,7 +61,7 @@ namespace JTServer.GW
             {
                 if (ditFromTagCache.TryGetValue(fromTag, out var item))
                 {
-                    var str = await SQ.Base.HttpHelperByHttpClient.HttpRequestHtml(cj.cl.MyTask.Config.RTVSAPI + $"Stop?TaskId={item.TaskId}", false, CancellationToken.None);
+                    var str = await SQ.Base.HttpHelperByHttpClient.HttpRequestHtml(cj.cl.MyTask.Config.RTVSAPI + $"Stop?TaskID={item.TaskID}", false, CancellationToken.None);
                     var res = str.ParseJSON<RETModel>();
                     return res.Code == StateCode.Success || res.Code == StateCode.NotFoundTask;
                 }
@@ -87,7 +87,7 @@ namespace JTServer.GW
                     {
                         ditFromTagCache[fromTag] = new fromTagCache
                         {
-                            TaskId = res.TaskId,
+                            TaskID = res.TaskID,
                             sdp = sdp
                         };
                         var ans = sdp.AnsSdp(did, res.LocIP, res.LocIP, res.LocPort);

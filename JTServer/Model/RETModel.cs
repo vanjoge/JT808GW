@@ -22,7 +22,7 @@ namespace JTServer.Model
         /// <summary>
         /// RTP推送任务唯一id，用此id区分多次任务
         /// </summary>
-        public string TaskId { get; set; }
+        public string TaskID { get; set; }
         /// <summary>
         /// 本地IP
         /// </summary>

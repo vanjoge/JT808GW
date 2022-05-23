@@ -43,7 +43,26 @@ namespace JTServer.GW
             {
                 if (ditFromTagCache.TryGetValue(fromTag, out var item))
                 {
-                    var str = await SQ.Base.HttpHelperByHttpClient.HttpRequestHtml(cj.cl.MyTask.Config.RTVSAPI + $"StartRealPlay?TaskID={item.TaskID}&SSRC={item.sdp.SSRC}", false, CancellationToken.None);
+                    string url;
+                    switch (item.sdp.SType)
+                    {
+                        case SDP28181.PlayType.Play:
+                            if (item.sdp.Media == SDP28181.MediaType.audio)
+                                url = $"{cj.cl.MyTask.Config.RTVSAPI}StartRealPlay?TaskID={item.TaskID}&SSRC={item.sdp.SSRC}&DataType=3";
+                            else
+                                url = $"{cj.cl.MyTask.Config.RTVSAPI}StartRealPlay?TaskID={item.TaskID}&SSRC={item.sdp.SSRC}";
+                            break;
+                        case SDP28181.PlayType.Playback:
+                        case SDP28181.PlayType.Download:
+                            url = $"{cj.cl.MyTask.Config.RTVSAPI}StartPlayback?TaskID={item.TaskID}&SSRC={item.sdp.SSRC}&StartTime={item.sdp.TStart.UNIXtoDateTime()}&EndTime={item.sdp.TEnd.UNIXtoDateTime()}";
+                            break;
+                        case SDP28181.PlayType.Talk:
+                            url = $"{cj.cl.MyTask.Config.RTVSAPI}StartRealPlay?TaskID={item.TaskID}&SSRC={item.sdp.SSRC}&DataType=2";
+                            break;
+                        default:
+                            return false;
+                    }
+                    var str = await SQ.Base.HttpHelperByHttpClient.HttpRequestHtml(url, false, CancellationToken.None);
                     var res = str.ParseJSON<RETModel>();
                     return res.Code == StateCode.Success;
                 }
@@ -91,8 +110,6 @@ namespace JTServer.GW
                             sdp = sdp
                         };
                         var ans = sdp.AnsSdp(did, res.LocIP, res.LocIP, res.LocPort);
-                        //RTVS暂只支持TCP推RTP 暂限定为TCP
-                        ans.NetType = SDP28181.RTPNetType.TCP;
                         return ans;
                     }
                 }

@@ -1628,7 +1628,7 @@ namespace JTServer.GW
         {
             if (IsAuthority && setting.Enable)
             {
-                gbCheji?.Stop();
+                gbCheji?.Stop(false);
                 gbCheji = new GBCheji(this, setting, EnableTraceLogs: cl.MyTask.Config.ShowSipLog);
                 gbCheji.Start();
             }

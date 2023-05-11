@@ -39,5 +39,9 @@ namespace _808GW.Controllers
             }
             return null;
         }
+        public string SendTextMsg(string Sim, byte Flag, string Text)
+        {
+            return Program.task.SendTextMsgToDev(Sim, Flag, Text);
+        }
     }
 }

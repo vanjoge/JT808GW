@@ -97,6 +97,23 @@ namespace JTServer
                 return "-1";
             }
         }
+        public string SendTextMsgToDev(string Sim, byte Flag, string Text)
+        {
+            try
+            {
+                var cj = GetChejiByClientPool(Sim);
+                if (cj == null)
+                {
+                    return "0";
+                }
+                return cj.SendTextMsg(Flag, Text) ? "1" : "-1";
+            }
+            catch (Exception ex)
+            {
+                Log.WriteLog4Ex("Send1078ToDev", ex);
+                return "-1";
+            }
+        }
         public string Send2Cheji0x9105(string Content)
         {
             try

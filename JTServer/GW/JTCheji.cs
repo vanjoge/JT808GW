@@ -1,5 +1,4 @@
 ﻿using JTServer.Model;
-using JTServer.Worker;
 using JX;
 using SQ.Base;
 using SQ.Base.GW;
@@ -8,7 +7,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace JTServer.GW
 {
@@ -329,6 +327,26 @@ namespace JTServer.GW
         #region 下发
 
         /// <summary>
+        /// 下发文本消息
+        /// </summary>
+        /// <param name="Flag"></param>
+        /// <param name="Text"></param>
+        /// <returns></returns>
+        public bool SendTextMsg(byte Flag, string Text)
+        {
+            var jtpd = jtdata.Package(0x8300, SimKey,
+                new JTSendTextMsg
+                {
+                    Flag = (JTTextFlag)Flag,
+                    TextInfo = Text
+                }.GetBinaryData());
+
+            return SendData_Active(jtpd) == SendDataState.Success;
+        }
+
+        #region 公共
+
+        /// <summary>
         /// 平台通用应答
         /// </summary>
         /// <param name="head"></param>
@@ -483,6 +501,7 @@ namespace JTServer.GW
             }
             return SendDataState.Overrun;
         }
+        #endregion
         #endregion
 
         //#region "协议解析"

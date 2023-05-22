@@ -59,7 +59,8 @@ namespace JTServer.GW
         {
             get
             {
-                return "12345678";
+                var str = DateTime.Now.Ticks.ToString();
+                return str.Substring(str.Length - 11);
             }
         }
 

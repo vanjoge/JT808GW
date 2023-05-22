@@ -1249,7 +1249,7 @@ namespace JTServer.GW
             //下发注册应答
             SendAnswer(jtdata.Package(0x8100, head.Sim, new JTRegInfoAnswer
             {
-                AuthorityID = NewAuthorityCode,
+                AuthorityID = DevInfo.AuthorityID,
                 MsgSerialNumber = head.SerialNumber,
                 RegResults = JTRegResults.Success
             }.GetBinaryData()));

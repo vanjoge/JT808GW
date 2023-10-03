@@ -254,7 +254,7 @@ namespace JTServer
         {
             try
             {
-                var path = AppDomain.CurrentDomain.BaseDirectory + "SettingConfig.xml";
+                var path = SQ.Base.FileHelp.GetMyConfPath() + "SettingConfig.xml";
                 if (!File.Exists(path))
                 {
                     Log.WriteLog4("配置文件不存在，已加载默认配置");

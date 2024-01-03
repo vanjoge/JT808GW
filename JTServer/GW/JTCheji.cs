@@ -348,6 +348,21 @@ namespace JTServer.GW
         #region 公共
 
         /// <summary>
+        /// 发送离线指令
+        /// </summary>
+        private void SendOfflineCmds()
+        {
+            if (cl.MyTask.dicOfflineCmds.TryRemove(SimKey, out var dit))
+            {
+                var cmds = dit.Values.ToArray();
+                foreach (var cmd in cmds)
+                {
+                    var jtpd = jtdata.Package(cmd.MsgId, SimKey, cmd.JTData.GetBinaryData());
+                    SendData_Active(jtpd);
+                }
+            }
+        }
+        /// <summary>
         /// 平台通用应答
         /// </summary>
         /// <param name="head"></param>
@@ -1203,6 +1218,8 @@ namespace JTServer.GW
                 AuthorityTime = LastHeart = DateTime.Now;
                 EnterpriseCode = 0;
                 SendAnswer(jtdata.Package(0x9003, head.Sim));
+                
+                SendOfflineCmds();
             }
             else
             {

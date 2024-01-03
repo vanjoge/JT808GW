@@ -61,6 +61,13 @@ namespace JTServer
         public ConcurrentDictionary<string, DeviceInfo> dic809Vehicle = new ConcurrentDictionary<string, DeviceInfo>();
         public ConcurrentDictionary<string, DeviceInfo> dic809VehicleBySim = new ConcurrentDictionary<string, DeviceInfo>();
 
+        /// <summary>
+        /// 离线指令
+        /// TODO:未保存，重启服务会丢失
+        /// Key:Sim
+        /// 二级Key:离线指令ID
+        /// </summary>
+        public ConcurrentDictionary<string, Dictionary<int, OfflineCmd>> dicOfflineCmds = new ConcurrentDictionary<string, Dictionary<int, OfflineCmd>>();
 
         #endregion
 
@@ -97,7 +104,30 @@ namespace JTServer
                 return "-1";
             }
         }
-        public string SendTextMsgToDev(string Sim, byte Flag, string Text)
+        public string SendTextMsgToDev(string Sim, byte Flag, string Text, int OffId)
+        {
+            var ret = SendTextMsgToDev(Sim, Flag, Text);
+            if (ret != "1" && OffId > 0)
+            {
+                var dit = dicOfflineCmds.GetOrAdd(Sim, p =>
+                {
+                    return new Dictionary<int, OfflineCmd>();
+                });
+                dit[OffId] = new OfflineCmd
+                {
+                    MsgId = 0x8300,
+                    JTData = new JTSendTextMsg
+                    {
+                        Flag = (JTTextFlag)Flag,
+                        TextInfo = Text
+                    }
+                };
+                return "1001";
+            }
+            return ret;
+        }
+
+        private string SendTextMsgToDev(string Sim, byte Flag, string Text)
         {
             try
             {
@@ -114,6 +144,8 @@ namespace JTServer
                 return "-1";
             }
         }
+
+
         public string Send2Cheji0x9105(string Content)
         {
             try

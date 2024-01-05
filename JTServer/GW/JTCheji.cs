@@ -887,6 +887,11 @@ namespace JTServer.GW
         #region 协议解析
         public void JXData(JTHeader head, byte[] bGps)
         {
+            //被禁用SIM直接返回不响应
+            if (cl.MyTask.Config.BanSims.Contains(head.Sim))
+            {
+                return;
+            }
             jtdata.Is2019 = head.Is2019;
             if (cl.MyTask.Config.CanRegSecond)
             {

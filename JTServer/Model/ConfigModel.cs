@@ -108,6 +108,8 @@ namespace JTServer.Model
             GatewayIP = "116.228.114.206";
             ExThreshold = 1000;
             SchThreshold = 10000;
+
+            BanSims = "";
         }
         /// <summary>
         /// 发送GPS和报警到上级平台
@@ -543,5 +545,10 @@ namespace JTServer.Model
         public bool EnabledZeroMQ { set; get; } = true;
 
         #endregion
+        
+        /// <summary>
+        /// 禁止SIM
+        /// </summary>
+        public string BanSims { get; set; }
     }
 }
